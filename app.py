@@ -14,9 +14,6 @@ colored_header(
     color_name="violet-70",
 )
 
-# --- Rain Effect ---
-rain(emoji="🏭", font_size=30, falling_speed=5, animation_length="infinite")
-
 # --- Sample Input ---
 sample_flow = """- 10 15 20
 0 - 10 5
