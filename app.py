@@ -45,7 +45,7 @@ def calculate_cost(flow, dist, layout):
 
 def pairwise_exchange_optimizer(flow, dist):
     n = len(flow)
-    layout = list(range(n))  # [0, 1, 2, 3]
+    layout = list(range(n))  # Start with [0, 1, 2, 3]
     history = []
     iteration = 0
 
@@ -64,7 +64,7 @@ def pairwise_exchange_optimizer(flow, dist):
                 best_layout = new_layout[:]
 
         if best_layout == layout:
-            break  # No improvement found
+            break  # No better layout found
         layout = best_layout
         iteration += 1
 
@@ -92,4 +92,15 @@ if st.button("🚀 Run Optimization"):
             st.write(f"**Iteration {iter_num}:** Layout = {[x + 1 for x in layout]}, Cost = {cost}")
 
         # Show matrices
-        st.markdown("### 📌
+        st.markdown("### 📌 Input Matrices")
+        st.write("FLOW Matrix:")
+        st.dataframe(flow)
+        st.write("DISTANCE Matrix:")
+        st.dataframe(dist)
+
+    except Exception as e:
+        st.error(f"❌ Error: {e}")
+
+# --- Footer ---
+st.markdown("---")
+st.caption("Built with ❤️ using Streamlit")
