@@ -1,24 +1,20 @@
 import streamlit as st
 import numpy as np
 from itertools import combinations
-from streamlit_extras.colored_header import colored_header
-from streamlit_extras.let_it_rain import rain
 
-# --- Page Config ---
+# --- Page Setup ---
 st.set_page_config(page_title="Pairwise Exchange Optimizer", layout="centered")
 
-# --- Header ---
-colored_header(
-    label="🔁 Pairwise Exchange Layout Optimizer",
-    description="Find local optimal layout by iterative pairwise exchanges.",
-    color_name="violet-70",
-)
+# --- Title ---
+st.title("🔁 Pairwise Exchange Layout Optimizer")
+st.markdown("Optimize facility layout by minimizing total cost using pairwise swaps.")
 
 # --- Sample Input ---
 sample_flow = """- 10 15 20
 0 - 10 5
 0 0 - 5
 0 0 0 -"""
+
 sample_dist = """- 1 2 3
 1 - 1 2
 2 1 - 1
@@ -49,7 +45,7 @@ def calculate_cost(flow, dist, layout):
 
 def pairwise_exchange_optimizer(flow, dist):
     n = len(flow)
-    layout = list(range(n))
+    layout = list(range(n))  # [0, 1, 2, 3]
     history = []
     iteration = 0
 
@@ -62,9 +58,9 @@ def pairwise_exchange_optimizer(flow, dist):
         for i, j in combinations(range(n), 2):
             new_layout = layout[:]
             new_layout[i], new_layout[j] = new_layout[j], new_layout[i]
-            cost = calculate_cost(flow, dist, new_layout)
-            if cost < best_cost:
-                best_cost = cost
+            new_cost = calculate_cost(flow, dist, new_layout)
+            if new_cost < best_cost:
+                best_cost = new_cost
                 best_layout = new_layout[:]
 
         if best_layout == layout:
@@ -74,8 +70,8 @@ def pairwise_exchange_optimizer(flow, dist):
 
     return layout, best_cost, history
 
-# --- Run Calculation ---
-if st.button("🚀 Run Pairwise Exchange Optimization"):
+# --- Run Optimization ---
+if st.button("🚀 Run Optimization"):
     try:
         flow = parse_matrix(flow_input)
         dist = parse_matrix(dist_input)
@@ -86,22 +82,14 @@ if st.button("🚀 Run Pairwise Exchange Optimization"):
 
         final_layout, final_cost, history = pairwise_exchange_optimizer(flow, dist)
 
-        st.success(f"✅ Final Layout: {final_layout}")
+        # Output final result
+        st.success(f"✅ Final Layout (1-based): {[x + 1 for x in final_layout]}")
         st.success(f"💰 Final Total Cost: {final_cost}")
 
+        # Show all iterations
         st.markdown("### 📊 Iteration History")
         for iter_num, layout, cost in history:
-            st.write(f"**Iteration {iter_num}:** Layout = {layout}, Cost = {cost}")
+            st.write(f"**Iteration {iter_num}:** Layout = {[x + 1 for x in layout]}, Cost = {cost}")
 
-        st.markdown("### 📌 Matrices")
-        st.write("FLOW Matrix:")
-        st.dataframe(flow)
-        st.write("DISTANCE Matrix:")
-        st.dataframe(dist)
-
-    except Exception as e:
-        st.error(f"❌ Error: {e}")
-
-# --- Footer ---
-st.markdown("---")
-st.caption("Built with ❤️ using Streamlit")
+        # Show matrices
+        st.markdown("### 📌
